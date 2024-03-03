@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String         @id @default(auto()) @map("_id") @db.ObjectId
+  pen_name             String         @unique @default(uuid())
+  email                String         @unique
+  password             String
+  profile              Profile
+  prefrences           Prefrences
+  role                 Role           @default(USER)
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @default(now())
+  books                Book[]         @relation("UserBook")
+  liked_books_ids      String[]       @db.ObjectId
+  liked_books          Book[]         @relation("LikedByUser", fields: [liked_books_ids], references: [id])
+  collaborations_ids   String[]       @db.ObjectId
+  collaborations       Book[]         @relation("Collaborations", fields: [collaborations_ids], references: [id])
+  preferred_genres_ids String[]       @db.ObjectId
+  preferred_genres     Genre[]        @relation("PreferredGenres", fields: [preferred_genres_ids], references: [id])
+  relationship         Relationship?  @relation("UserRelationship")
+  relationships        Relationship[] @relation("Relationships")
+}
+
+model Relationship {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  user_id      String   @unique @db.ObjectId
+  user         User     @relation("UserRelationship", fields: [user_id], references: [id])
+  relation_id  String   @unique @db.ObjectId
+  relation     User     @relation("Relationships", fields: [relation_id], references: [id])
+  is_following Boolean  @default(false)
+  is_follower  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+}
+
+model Genre {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  name             String   @unique
+  books_ids        String[] @db.ObjectId
+  books            Book[]   @relation("BookGenres", fields: [books_ids], references: [id])
+  preferred_by_ids String[] @db.ObjectId
+  preferred_by     User[]   @relation("PreferredGenres", fields: [preferred_by_ids], references: [id])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
+}
+
+model Book {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  title             String
+  cover             Media
+  synopsis          String
+  user_id           String   @db.ObjectId
+  user              User     @relation("UserBook", fields: [user_id], references: [id])
+  liked_by_id       String[] @db.ObjectId
+  liked_by          User[]   @relation("LikedByUser", fields: [liked_by_id], references: [id])
+  collaborators_ids String[] @db.ObjectId
+  collaborator      User[]   @relation("Collaborations", fields: [collaborators_ids], references: [id])
+  genres_ids        String[] @db.ObjectId
+  genres            Genre[]  @relation("BookGenres", fields: [genres_ids], references: [id])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
+}
+
+type Profile {
+  full_name String
+  avatar    Media?
+}
+
+type Media {
+  id   String @default(uuid())
+  url  String
+  name String
+  size Float
+}
+
+type Prefrences {
+  book_author_name BookAuthorName @default(pen_name)
+}
+
+enum BookAuthorName {
+  pen_name
+  full_name
+  initials
+}
+
+enum Role {
+  USER
+  ADMIN
+}

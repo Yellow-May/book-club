@@ -1,29 +1,37 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { Outlet, useFetcher, useMatches } from "@remix-run/react";
-import { requiresAuth } from "~/utils/auth.server";
+import { LoaderFunctionArgs, json } from "@remix-run/node";
+import { Outlet } from "@remix-run/react";
+import { Grid, GridItem } from "@chakra-ui/react";
+import { getUser, requiresAuth } from "~/utils/auth.server";
+import Header from "./Header";
+import Nav from "./Nav";
+
+export function meta() {
+  return [{ title: "Dashboard" }];
+}
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  return await requiresAuth(request);
+  await requiresAuth(request);
+  const user = await getUser(request);
+  return json({ user });
 }
 
 export default function DashboardLayout() {
-  const matches = useMatches();
-  const fetcher = useFetcher();
-
   return (
-    <div>
-      <h1>Dashboard Layout</h1>
-      <fetcher.Form method="post">
-        <input
-          type="hidden"
-          name="pathname"
-          value={matches.at(-1)?.pathname ?? ""}
-        />
-        <button type="submit" name="_action" value="logout">
-          Logout
-        </button>
-      </fetcher.Form>
-      <Outlet />
-    </div>
+    <Grid
+      templateAreas={`"header header" "nav main"`}
+      gridTemplateRows={"70px 1fr"}
+      gridTemplateColumns={"240px 1fr"}
+      h="100%"
+      gap="1"
+      color="blackAlpha.700"
+    >
+      <Header />
+
+      <Nav />
+
+      <GridItem p="5" bg="gray.200" area={"main"} as="main">
+        <Outlet />
+      </GridItem>
+    </Grid>
   );
 }

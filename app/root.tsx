@@ -1,6 +1,6 @@
 import { withEmotionCache } from "@emotion/react";
 import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction } from "@remix-run/node";
+import type { ActionFunctionArgs, LinksFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -14,6 +14,8 @@ import { ClientStyleContext, ServerStyleContext } from "./styles/context";
 import { ChakraProvider } from "@chakra-ui/react";
 import { theme } from "./styles/theme";
 import globalCSSHref from "./styles/global.css";
+import tailwindCSSHref from "./styles/tailwind.css";
+import { logout } from "./utils/auth.server";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -23,8 +25,23 @@ export const links: LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap",
   },
   { rel: "stylesheet", href: globalCSSHref },
+  { rel: "stylesheet", href: tailwindCSSHref },
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
 ];
+
+export async function action({ request }: ActionFunctionArgs) {
+  const form = await request.formData();
+  const _action = form.get("_action");
+
+  switch (_action) {
+    case "logout":
+      const pathname = form.get("pathname") as string;
+      return await logout(request, pathname);
+
+    default:
+      return null;
+  }
+}
 
 interface DocumentProps {
   children: React.ReactNode;

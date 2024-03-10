@@ -1,5 +1,5 @@
-import { Box } from "@chakra-ui/react";
 import type { MetaFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -8,10 +8,10 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export async function loader() {
+  return redirect("/home");
+}
+
 export default function Index() {
-  return (
-    <Box height={"50%"} minHeight={"100%"}>
-      Hallo
-    </Box>
-  );
+  return null;
 }

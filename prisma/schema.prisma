@@ -67,7 +67,7 @@ model Book {
   liked_by_id       String[] @db.ObjectId
   liked_by          User[]   @relation("LikedByUser", fields: [liked_by_id], references: [id])
   collaborators_ids String[] @db.ObjectId
-  collaborator      User[]   @relation("Collaborations", fields: [collaborators_ids], references: [id])
+  collaborators     User[]   @relation("Collaborations", fields: [collaborators_ids], references: [id])
   genres_ids        String[] @db.ObjectId
   genres            Genre[]  @relation("BookGenres", fields: [genres_ids], references: [id])
   createdAt         DateTime @default(now())

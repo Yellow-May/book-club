@@ -1,6 +1,15 @@
 import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { Outlet } from "@remix-run/react";
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Link, Outlet, useMatches } from "@remix-run/react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  Flex,
+  Grid,
+  GridItem,
+  Spacer,
+} from "@chakra-ui/react";
 import { getUser, requiresAuth } from "~/utils/auth.server";
 import Header from "./Header";
 import Nav from "./Nav";
@@ -16,6 +25,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function DashboardLayout() {
+  const matches = useMatches();
+  const paths = matches
+    .at(-1)
+    ?.pathname.split("/")
+    .filter((e) => e);
+
   return (
     <Grid
       templateAreas={`"header header" "nav main"`}
@@ -29,7 +44,37 @@ export default function DashboardLayout() {
 
       <Nav />
 
-      <GridItem p="5" bg="gray.200" area={"main"} as="main">
+      <GridItem
+        p="5"
+        bg="gray.200"
+        area={"main"}
+        as="main"
+        position={"relative"}
+      >
+        <Flex alignItems={"center"} marginBottom={5} height={30}>
+          <Breadcrumb fontWeight="600" fontSize="xs">
+            {paths?.map((item, index) => {
+              const to = paths
+                .slice(0, index + 1)
+                .reduce((a, b) => a + "/" + b, "");
+
+              return (
+                <BreadcrumbItem key={index}>
+                  <BreadcrumbLink
+                    as={Link}
+                    to={to ?? "/"}
+                    isCurrentPage={index === paths.length - 1}
+                    textTransform={"capitalize"}
+                  >
+                    {item.replaceAll("-", " ")}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              );
+            })}
+          </Breadcrumb>
+
+          <Spacer />
+        </Flex>
         <Outlet />
       </GridItem>
     </Grid>

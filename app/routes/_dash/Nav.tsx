@@ -14,7 +14,9 @@ export default function Nav() {
     <GridItem py="5" bg="blue.400" area={"nav"} as="aside">
       <VStack alignItems={"flex-start"} gap={3.5} as="nav">
         {navlinks.map(({ Icon, label, to }, idx) => {
-          const active = matches.at(-1)?.pathname === to;
+          const pathname = matches.at(-1)?.pathname;
+          const active = pathname?.startsWith(to);
+
           return (
             <Link
               key={idx}

@@ -52,7 +52,7 @@ export default function DashboardLayout() {
         position={"relative"}
       >
         <Flex alignItems={"center"} marginBottom={5} height={30}>
-          <Breadcrumb fontWeight="600" fontSize="xs">
+          <Breadcrumb fontWeight="600" fontSize="xs" color={"gray.900"}>
             {paths?.map((item, index) => {
               const to = paths
                 .slice(0, index + 1)

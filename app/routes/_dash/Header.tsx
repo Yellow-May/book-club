@@ -1,4 +1,9 @@
-import { Link, useFetcher, useLoaderData, useMatches } from "@remix-run/react";
+import {
+  Link as RouterLink,
+  useFetcher,
+  useLoaderData,
+  useMatches,
+} from "@remix-run/react";
 import {
   Avatar,
   Button,
@@ -15,8 +20,10 @@ import {
   PopoverHeader,
   PopoverTrigger,
   VStack,
+  Link,
 } from "@chakra-ui/react";
-import { FaSignOutAlt } from "react-icons/fa";
+import { FaSignOutAlt, FaUser } from "react-icons/fa";
+import { FaGear } from "react-icons/fa6";
 import { loader } from "./route";
 
 export default function Header() {
@@ -29,7 +36,7 @@ export default function Header() {
     <GridItem px={10} bg="white" area={"header"} as="header">
       <Flex alignItems={"center"} justifyContent={"space-between"} h={"100%"}>
         <Heading
-          as={Link}
+          as={RouterLink}
           to={"/"}
           size={"md"}
           textTransform={"uppercase"}
@@ -43,15 +50,48 @@ export default function Header() {
             <PopoverTrigger>
               <Avatar
                 name={user?.profile.full_name}
-                src="https://bit.ly/broken-link"
+                src={user?.profile.avatar?.url}
+                cursor={"pointer"}
               />
             </PopoverTrigger>
             <PopoverContent>
               <PopoverArrow />
               <PopoverCloseButton />
-              <PopoverHeader>{user?.profile.full_name}</PopoverHeader>
+              <PopoverHeader fontWeight={600} noOfLines={1}>
+                {user?.profile.full_name}
+              </PopoverHeader>
               <PopoverBody>
-                <VStack alignItems={"flex-start"}>
+                <VStack alignItems={"flex-start"} gap={2}>
+                  <Link
+                    as={RouterLink}
+                    to={"/profile"}
+                    width={"100%"}
+                    padding={"4px 0"}
+                    fontSize={"sm"}
+                    display={"flex"}
+                    alignItems={"center"}
+                    gap={2}
+                    borderBottom={"thin solid"}
+                    borderBottomColor={"gray.200"}
+                  >
+                    <Icon as={FaUser} />
+                    Profile
+                  </Link>
+                  <Link
+                    as={RouterLink}
+                    to={"/settings"}
+                    width={"100%"}
+                    padding={"4px 0"}
+                    fontSize={"sm"}
+                    display={"flex"}
+                    alignItems={"center"}
+                    gap={2}
+                    borderBottom={"thin solid"}
+                    borderBottomColor={"gray.200"}
+                  >
+                    <Icon as={FaGear} />
+                    Settings
+                  </Link>
                   <fetcher.Form method="post">
                     <input
                       type="hidden"
@@ -63,6 +103,7 @@ export default function Header() {
                       name="_action"
                       value="logout"
                       colorScheme="red"
+                      size={"sm"}
                       leftIcon={<Icon as={FaSignOutAlt} />}
                     >
                       Logout

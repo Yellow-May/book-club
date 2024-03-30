@@ -19,7 +19,6 @@ import {
   Tag,
   TagLabel,
   Text,
-  VStack,
 } from "@chakra-ui/react";
 import { Genre, User } from "@prisma/client";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
@@ -125,15 +124,19 @@ export default function MyBook() {
               >
                 Genres
               </Heading>
-              <HStack>
-                {loader.my_book.genres.map((genre: Genre) => {
-                  return (
-                    <Tag key={genre.id} colorScheme="blue">
-                      {genre.name}
-                    </Tag>
-                  );
-                })}
-              </HStack>
+              {loader.my_book.genres.length > 0 ? (
+                <HStack>
+                  {loader.my_book.genres.map((genre: Genre) => {
+                    return (
+                      <Tag key={genre.id} colorScheme="blue">
+                        {genre.name}
+                      </Tag>
+                    );
+                  })}
+                </HStack>
+              ) : (
+                <Text>No genre</Text>
+              )}
             </Box>
 
             <Box>
@@ -165,7 +168,7 @@ export default function MyBook() {
                   })}
                 </HStack>
               ) : (
-                <Text>No collaborators</Text>
+                <Text>No collaborator</Text>
               )}
             </Box>
           </GridItem>

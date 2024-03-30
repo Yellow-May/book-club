@@ -74,7 +74,9 @@ export default function MyBooks() {
                   >
                     <Td>{book.title}</Td>
                     <Td isNumeric>
-                      {book.genres.map((genre) => genre.name).join(", ")}
+                      {book.genres.length > 0
+                        ? book.genres.map((genre) => genre.name).join(", ")
+                        : "None"}
                     </Td>
                   </Tr>
                 );

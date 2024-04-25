@@ -1,11 +1,13 @@
 import { Link as RemixLink, useMatches } from "@remix-run/react";
 import { Flex, GridItem, Link, VStack } from "@chakra-ui/react";
 import { FaBook, FaHome, FaJediOrder } from "react-icons/fa";
+import { FaGear } from "react-icons/fa6";
 
 const navlinks = [
   { to: "/home", label: "Home", Icon: FaHome },
   { to: "/my-books", label: "My Books", Icon: FaBook },
   { to: "/genres", label: "Genres", Icon: FaJediOrder },
+  { to: "/settings", label: "Settings", Icon: FaGear },
 ];
 
 export default function Nav() {

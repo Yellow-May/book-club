@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import { db } from "./db.server";
 import { RegisterForm } from "./types.server";
 import bcrypt from "bcrypt";
@@ -20,8 +21,16 @@ export async function createUser(user: RegisterForm) {
   return new_user;
 }
 
+export async function updatePassword(user: User, new_password: string) {
+  const password_hash = await bcrypt.hash(new_password, 10);
+  await db.user.update({
+    where: { id: user.id },
+    data: { password: password_hash },
+  });
+}
+
 export async function checkPassword(
-  user: { password: string },
+  user: User,
   password: string
 ): Promise<boolean> {
   return bcrypt.compare(password, user.password);

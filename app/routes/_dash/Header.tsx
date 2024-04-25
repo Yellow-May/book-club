@@ -64,7 +64,7 @@ export default function Header() {
                 <VStack alignItems={"flex-start"} gap={2}>
                   <Link
                     as={RouterLink}
-                    to={"/profile"}
+                    to={"/settings/account"}
                     width={"100%"}
                     padding={"4px 0"}
                     fontSize={"sm"}
@@ -75,7 +75,7 @@ export default function Header() {
                     borderBottomColor={"gray.200"}
                   >
                     <Icon as={FaUser} />
-                    Profile
+                    Account
                   </Link>
                   <Link
                     as={RouterLink}
